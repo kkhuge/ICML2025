@@ -80,8 +80,17 @@ def main():
             train_y[user].extend(np.ones(num_train)*i)
 
             test_X[user].append(mnist_testdata[i][0].tolist())
-            mnist_testdata[i] = mnist_testdata[i][1:]
-            test_y[user] += (i * np.ones(1)).tolist()
+            test_X[user].append(mnist_testdata[i][1].tolist())
+            test_X[user].append(mnist_testdata[i][2].tolist())
+            test_X[user].append(mnist_testdata[i][3].tolist())
+            test_X[user].append(mnist_testdata[i][4].tolist())
+            test_X[user].append(mnist_testdata[i][5].tolist())
+            test_X[user].append(mnist_testdata[i][6].tolist())
+            test_X[user].append(mnist_testdata[i][7].tolist())
+            test_X[user].append(mnist_testdata[i][8].tolist())
+            test_X[user].append(mnist_testdata[i][9].tolist())
+            mnist_testdata[i] = mnist_testdata[i][10:]
+            test_y[user] += (i * np.ones(10)).tolist()
 
 
     print('>>> Set data path for MNIST.')
