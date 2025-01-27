@@ -66,7 +66,7 @@ def main():
         cifar_testdata.append(test_cifar.data[idx])
     split_cifar_testdata = []
     for digit in cifar_testdata:
-        split_cifar_testdata.append(data_split(digit, 1000))
+        split_cifar_testdata.append(data_split(digit, 100))
 
 
     train_X = [[] for _ in range(NUM_USER)]
