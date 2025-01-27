@@ -91,8 +91,17 @@ def main():
             train_y[user] += (d * np.ones(l)).tolist()
 
             test_X[user].append(mnist_testdata[d][0].tolist())
-            mnist_testdata[d] = mnist_testdata[d][1:]
-            test_y[user] += (d * np.ones(1)).tolist()
+            test_X[user].append(mnist_testdata[d][1].tolist())
+            test_X[user].append(mnist_testdata[d][2].tolist())
+            test_X[user].append(mnist_testdata[d][3].tolist())
+            test_X[user].append(mnist_testdata[d][4].tolist())
+            test_X[user].append(mnist_testdata[d][5].tolist())
+            test_X[user].append(mnist_testdata[d][6].tolist())
+            test_X[user].append(mnist_testdata[d][7].tolist())
+            test_X[user].append(mnist_testdata[d][8].tolist())
+            test_X[user].append(mnist_testdata[d][9].tolist())
+            mnist_testdata[d] = mnist_testdata[d][10:]
+            test_y[user] += (d * np.ones(10)).tolist()
 
     print('>>> Set data path for MNIST.')
     image = 1 if IMAGE_DATA else 0
