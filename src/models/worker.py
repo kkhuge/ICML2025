@@ -212,6 +212,44 @@ class MSEWorker(Worker):
                        "acc": train_acc / train_total}
         return_dict.update(param_dict)
         return local_solution, return_dict, pre_dic, loss_dic, para_dic
+        
+    def local_train_client_0_theta_0(self, train_dataloader, **kwargs):
+        # current_step = kwargs['T']
+        theta_0_dic = []
+        self.model.train()
+        train_loss = 0.
+        train_total = 0
+        train_acc = 0
+        for i in range(self.num_epoch):
+            jacobian_0 = self.get_jacobian(train_dataloader).detach()
+            theta_0 = torch.mm(jacobian_0, jacobian_0.T)
+            theta_0_dic.append(theta_0)
+            x, y = next(iter(train_dataloader))
+            x = self.flatten_data(x)
+            if self.gpu:
+                x, y = x.cuda(), y.cuda()
+
+            self.optimizer.zero_grad()
+            pred = self.model(x)
+
+            loss = nn.MSELoss()(pred, y.unsqueeze(1).float())
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 60)
+            self.optimizer.step()
+            target_size = y.size(0)
+
+            train_total += target_size
+
+        local_solution = self.get_flat_model_params()
+        param_dict = {"norm": torch.norm(local_solution).item(),
+                      "max": local_solution.max().item(),
+                      "min": local_solution.min().item()}
+        comp = self.num_epoch * train_total * self.flops
+        return_dict = {"comp": comp,
+                       "loss": train_loss / train_total,
+                       "acc": train_acc / train_total}
+        return_dict.update(param_dict)
+        return local_solution, return_dict, theta_0_dic
 
     def local_test(self, test_dataloader):
         self.model.eval()
