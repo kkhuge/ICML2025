@@ -38,8 +38,8 @@ Before running the code, it is necessary to manually set and save the results, f
 
 ```
 # train the family of fully connected network
-np.save(loss_dir + '/loss_test' + self.dataset + self.model + '_FNN1', self.loss_list_test)
-np.save(acc_dir + '/acc_test' + self.dataset + self.model + '_FNN1', self.acc_list_test)
+np.save(loss_dir + '/loss_test' + self.dataset + self.model + '_fc1', self.loss_list_test)
+np.save(acc_dir + '/acc_test' + self.dataset + self.model + '_fc1', self.acc_list_test)
 ```
 
 
