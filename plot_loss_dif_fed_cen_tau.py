@@ -4,7 +4,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 matplotlib.rcParams['text.usetex'] = True
 matplotlib.rc('font', size=17)
-tau = 5
+tau = 5 #2
 
 def plot_learning(result_dir, ax, smooth=1, interval=1, max_points=None, **kwargs):
     data = np.load(result_dir, allow_pickle=True)
