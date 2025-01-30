@@ -29,7 +29,7 @@ ax.set_yticks(y_ticks)
 ax.set_yticklabels([f'$2^{{-{i}}}$' for i in range(0, 10, 2)])
 ax.set_xticks(np.arange(0, 600, 100))
 ax.set_xlim([0, 500])
-ax.set_ylim([2**-8, 1])  # 根据负指数设置y轴范围
+ax.set_ylim([2**-8, 1])
 ax.set_xlabel('Global Round')
 ax.set_ylabel(r'$\|\Theta^{t\tau} - \Theta^0\|_F / \|\Theta^0\|_F$')
 ax.grid(True, which="both", ls="--")
