@@ -106,6 +106,19 @@ class Client(object):
 
         return (len(self.train_data), local_solution), stats, output_client_0, loss_client_0, parameters_client_0
 
+    def local_train_client_0_theta_0(self, **kwargs):
+        bytes_w = self.worker.model_bytes
+        begin_time = time.time()
+        local_solution, worker_stats, theta_0_dic = self.worker.local_train_client_0_theta_0(self.train_dataloader, **kwargs)
+        end_time = time.time()
+        bytes_r = self.worker.model_bytes
+
+        stats = {'id': self.cid, 'bytes_w': bytes_w, 'bytes_r': bytes_r,
+                 "time": round(end_time-begin_time, 2)}
+        stats.update(worker_stats)
+
+        return (len(self.train_data), local_solution), stats, theta_0_dic
+
     def local_test(self, use_eval_data=True):
         if use_eval_data:
             dataloader, dataset = self.test_dataloader, self.test_data
