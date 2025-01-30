@@ -20,6 +20,7 @@ class BaseTrainer(object):
         print('>>> Activate a worker for training')
         self.device = options["device"]
         self.gpu = options['gpu']
+        self.trainer = options['algo']
         self.batch_size = options['batch_size']
         self.all_train_data_num = 0
         _,_,self.all_train_data, self.all_test_data = dataset
@@ -34,7 +35,7 @@ class BaseTrainer(object):
         print('>>> Weigh updates by {}'.format(
             'simple average' if self.simple_average else 'sample numbers'))
 
-
+       
         self.name = '_'.join([name, f'wn{self.clients_per_round}', f'tn{len(self.clients)}'])
         self.metrics = Metrics(self.clients, options, self.name)
         self.print_result = not options['noprint']
@@ -45,19 +46,18 @@ class BaseTrainer(object):
         combined_features_test = []
         combined_labels_test = []
 
-        transform = self.all_test_data[0].transform
-        # 遍历字典中的每个 MiniDataset
+        transform = self.all_test_data[0].transform 
+        
         for i in self.all_train_data:
-            dataset = self.all_train_data[i]
-            features = torch.tensor(dataset.data)
-            labels = torch.tensor(dataset.labels)
+            dataset = self.all_train_data[i]  
+            features = torch.tensor(dataset.data)  
+            labels = torch.tensor(dataset.labels)  
 
-            combined_features_train.append(features)
-            combined_labels_train.append(labels)
+            combined_features_train.append(features)  
+            combined_labels_train.append(labels)  
 
-        # 合并所有特征和标签
-        combined_features_train = torch.cat(combined_features_train, dim=0)
-        combined_labels_train = torch.cat(combined_labels_train, dim=0)
+        combined_features_train = torch.cat(combined_features_train, dim=0) 
+        combined_labels_train = torch.cat(combined_labels_train, dim=0)  
         self.all_train_data_client_0 = self.all_train_data[0]
         self.all_train_data = CustomDataset(data=combined_features_train,labels=combined_labels_train,transform=transform)
         if options['dataset'] == 'cifar10_all_data_1_linear_regression_niid' or options['dataset'] == 'cifar10_all_data_1_linear_regression_iid':
@@ -69,16 +69,15 @@ class BaseTrainer(object):
 
 
         for i in self.all_test_data:
-            dataset = self.all_test_data[i]
-            features = torch.tensor(dataset.data)
-            labels = torch.tensor(dataset.labels)
+            dataset = self.all_test_data[i]  
+            features = torch.tensor(dataset.data)  
+            labels = torch.tensor(dataset.labels)  
 
-            combined_features_test.append(features)
-            combined_labels_test.append(labels)
+            combined_features_test.append(features)  
+            combined_labels_test.append(labels)  
 
-        # 合并所有特征和标签
-        combined_features_test = torch.cat(combined_features_test, dim=0)
-        combined_labels_test = torch.cat(combined_labels_test, dim=0)
+        combined_features_test = torch.cat(combined_features_test, dim=0)  
+        combined_labels_test = torch.cat(combined_labels_test, dim=0)  
         self.all_test_data = CustomDataset(data=combined_features_test, labels=combined_labels_test,transform=transform)
         if options['dataset'] == 'cifar10_all_data_1_linear_regression_niid' or options['dataset'] == 'cifar10_all_data_1_linear_regression_iid':
             self.centralized_test_dataloader = DataLoader(self.all_test_data, batch_size=100, shuffle=False)
@@ -97,7 +96,11 @@ class BaseTrainer(object):
             print('>>> Don not use gpu')
 
     def setup_clients(self, dataset):
+        """Instantiates clients based on given train and test data directories
 
+        Returns:
+            all_clients: List of clients
+        """
         users, groups, train_data, test_data = dataset
         if len(groups) == 0:
             groups = [None for _ in users]
@@ -114,11 +117,16 @@ class BaseTrainer(object):
         return all_clients
 
     def train(self):
+        """The whole training procedure
 
+        No returns. All results all be saved.
+        """
         raise NotImplementedError
 
     def select_clients(self, seed=1):
-
+        # num_clients = min(self.clients_per_round, len(self.clients))
+        # np.random.seed(seed)
+        # return np.random.choice(self.clients, num_clients, replace=False).tolist()
         client = []
         for i in range(10):
             client.append(self.clients[i])
@@ -126,11 +134,23 @@ class BaseTrainer(object):
 
 
     def local_train(self, round_i, selected_clients, **kwargs):
+        """Training procedure for selected local clients
 
-        solns = []
-        stats = []
+        Args:
+            round_i: i-th round training
+            selected_clients: list of selected clients
+
+        Returns:
+            solns: local solutions, list of the tuple (num_sample, local_solution)
+            stats: Dict of some statistics
+        """
+        solns = []  # Buffer for receiving client solutions
+        stats = []  # Buffer for receiving client communication costs
         for i, c in enumerate(selected_clients, start=1):
+            # Communicate the latest model
             c.set_flat_model_params(self.latest_model)
+
+            # Solve minimization locally
             soln, stat = c.local_train()
             if self.print_result:
                 print("Round: {:>2d} | CID: {: >3d} ({:>2d}/{:>2d})| "
@@ -139,17 +159,31 @@ class BaseTrainer(object):
                        round_i, c.cid, i, self.clients_per_round,
                        stat['norm'], stat['min'], stat['max'],
                        stat['loss'], stat['acc']*100, stat['time']))
+            # Add solutions and stats
             solns.append(soln)
             stats.append(stat)
 
         return solns, stats
 
     def local_train_dataset(self, round_i, selected_clients, **kwargs):
-        solns = []
-        stats = []
+        """Training procedure for selected local clients
+
+        Args:
+            round_i: i-th round training
+            selected_clients: list of selected clients
+
+        Returns:
+            solns: local solutions, list of the tuple (num_sample, local_solution)
+            stats: Dict of some statistics
+        """
+        solns = []  # Buffer for receiving client solutions
+        stats = []  # Buffer for receiving client communication costs
         data_dic = []
         for i, c in enumerate(selected_clients, start=1):
+            # Communicate the latest model
             c.set_flat_model_params(self.latest_model)
+
+            # Solve minimization locally
             soln, stat, data = c.local_train_dataset()
             if self.print_result:
                 print("Round: {:>2d} | CID: {: >3d} ({:>2d}/{:>2d})| "
@@ -158,6 +192,7 @@ class BaseTrainer(object):
                        round_i, c.cid, i, self.clients_per_round,
                        stat['norm'], stat['min'], stat['max'],
                        stat['loss'], stat['acc']*100, stat['time']))
+            # Add solutions and stats
             solns.append(soln)
             stats.append(stat)
             data_dic.append(data)
@@ -165,12 +200,25 @@ class BaseTrainer(object):
         return solns, stats, data_dic
 
     def local_train_client_0(self, round_i, selected_clients, **kwargs):
-        solns = []
-        stats = []
+        """Training procedure for selected local clients
+
+        Args:
+            round_i: i-th round training
+            selected_clients: list of selected clients
+
+        Returns:
+            solns: local solutions, list of the tuple (num_sample, local_solution)
+            stats: Dict of some statistics
+        """
+        solns = []  # Buffer for receiving client solutions
+        stats = []  # Buffer for receiving client communication costs
         for i, c in enumerate(selected_clients):
             c.set_flat_model_params(self.latest_model)
             if i == 0:
-                soln, stat, output_client_0, loss_client_0, parameters_client_0 = c.local_train_client_0()
+                if self.trainer == 'fedavg9':
+                    soln, stat, output_client_0, loss_client_0, parameters_client_0 = c.local_train_client_0()
+                elif self.trainer == 'fedavg12':
+                    soln, stat, theta_0_dic = c.local_train_client_0_theta_0()
             else:
                 soln, stat = c.local_train()
             if self.print_result:
@@ -182,11 +230,14 @@ class BaseTrainer(object):
                        stat['loss'], stat['acc']*100, stat['time']))
             solns.append(soln)
             stats.append(stat)
-
-        return solns, stats, output_client_0, loss_client_0, parameters_client_0
+        if self.trainer == 'fedavg9':
+            return solns, stats, output_client_0, loss_client_0, parameters_client_0
+        else:
+            return solns, stats, theta_0_dic
 
     def local_test(self, use_eval_data=True):
         assert self.latest_model is not None
+        # self.worker.set_flat_model_params(self.latest_model)
 
         num_samples = []
         tot_corrects = []
@@ -211,6 +262,7 @@ class BaseTrainer(object):
     def test_latest_model_on_traindata(self, round_i):
         begin_time = time.time()
         stats_from_train_data = self.local_test(use_eval_data=False)
+
         model_len = len(self.latest_model)
         global_grads = np.zeros(model_len)
         num_samples = []
@@ -223,6 +275,7 @@ class BaseTrainer(object):
             global_grads += client_grad * num
         global_grads /= np.sum(np.asarray(num_samples))
         stats_from_train_data['gradnorm'] = np.linalg.norm(global_grads)
+
         difference = 0.
         for idx in range(len(self.clients)):
             difference += np.sum(np.square(global_grads - local_grads[idx]))
@@ -241,6 +294,7 @@ class BaseTrainer(object):
 
 
     def test_latest_model_on_evaldata(self, round_i):
+        # Collect stats from total eval data
         begin_time = time.time()
         stats_from_eval_data = self.local_test(use_eval_data=True)
         end_time = time.time()
@@ -329,8 +383,8 @@ class BaseTrainer(object):
 
         idx = 0
         for e in range(len(jacobian_i)):
-            row = len(jacobian_i[e])
-            column = len(jacobian)
+            row = len(jacobian_i[e])  
+            column = len(jacobian) 
             P_i = torch.zeros((row, column), device=self.device)
             for a in range(row):
                 P_i[a][a + idx] = 1
