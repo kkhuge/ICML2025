@@ -34,6 +34,15 @@ self.train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=Fl
 self.test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=Flase)
 ```
 
+Before running the code, it is necessary to manually set and save the results, for example：running the `main.py` using the `fedavg5` trainer with different networks to obtain figure 1, you must modify the name of the saved file to distinguish among different networks or widths
+
+```
+# train the family of fully connected network
+np.save(loss_dir + '/loss_test' + self.dataset + self.model + '_FNN1', self.loss_list_test)
+np.save(acc_dir + '/acc_test' + self.dataset + self.model + '_FNN1', self.acc_list_test)
+```
+
+
 ## Impact of Non-IID Versus Network Width
 
 Running the `main.py` using the `fedavg5` trainer with different networks to obtain figure 1 and figure 2.
