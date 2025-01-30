@@ -2,10 +2,9 @@ DATASETS = ['sent140', 'nist', 'shakespeare',
             'mnist', 'synthetic', 'cifar10', 'fmnist']
 TRAINERS = {'fedavg4': 'FedAvg4Trainer',
             'fedavg5': 'FedAvg5Trainer',
-            'fedavg6': 'FedAvg6Trainer',
             'fedavg9': 'FedAvg9Trainer',
-            'fedavg10': 'FedAvg10Trainer',
-            'fedavg11': 'FedAvg11Trainer'}
+            'fedavg11': 'FedAvg11Trainer',
+            'fedavg12': 'FedAvg12Trainer'}
 OPTIMIZERS = TRAINERS.keys()
 
 
