@@ -56,7 +56,6 @@ class FedAvg12Trainer(BaseTrainer):
             # Choose K clients prop to data size
             selected_clients = self.select_clients(seed=round_i)
 
-            # Solve minimization locally
             solns, stats, theta_0 = self.local_train_client_0(round_i, selected_clients)
             for k in range(len(theta_0)):
                 diff = (torch.norm(theta_0[k] - theta_0_0, p='fro') / torch.norm(theta_0_0, p='fro')).item()
