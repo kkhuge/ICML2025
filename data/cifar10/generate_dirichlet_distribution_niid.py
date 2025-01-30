@@ -60,7 +60,7 @@ def main():
 
     for user in range(NUM_USER):
         for i in range(10):
-            num_train = np.round(distribution[i][user] * (5000-10)).astype(int)  #-10 为了保留余量，防止分配不够的情况出现
+            num_train = np.round(distribution[i][user] * (5000-10)).astype(int) 
             for s in range(num_train):
                 train_X[user].append(cifar_traindata[i][s].tolist())
             cifar_traindata[i] = cifar_traindata[i][num_train:]
