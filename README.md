@@ -34,23 +34,20 @@ self.train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=Fl
 self.test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=Flase)
 ```
 
-## The Impact of Data Heterogeneity under Different Network Widths
+## Impact of Non-IID Versus Network Width
 
 Running the `main.py` using the `fedavg5` trainer with different networks to obtain figure 1 and figure 2.
 
-Running the `main.py` using the `fedavg4` trainer with different networks to obtain figure 3.
+Running the `main.py` using the `fedavg4` trainer with different networks to obtain the variation of global NTK and parameters in figure 3 and running the `main.py` using the `fedavg12` trainer with different networks to obtain the variation of local NTK in figure 3.
 
-## FedAvg Global Model Approximated by a Linear Model
+## Linear Approximation of FedAvg
 
 Running the `main.py` using the `fedavg9` trainer with the fully-connected networks to obtain figure 4.
 
 ## FedAvg Evolves as Centralized Learning
 
-Running the `main.py` using the `fedavg6` trainer with the fully-connected networks to obtain figure 5.
-
 Running the `main.py` using the `fedavg11` trainer with the fully-connected networks to obtain figure 6.
 
-Running the `main.py` using the `fedavg10` trainer with the fully-connected networks to obtain figure 7.
 
 ## Dependency
 
