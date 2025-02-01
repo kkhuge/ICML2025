@@ -18,7 +18,7 @@ cd data/cifar10
 4. Running the `generate_linear_regression_iid.py` to obtain IID mini-CIFAR-10 data while running `generate_linear_regression_niid.py` to obtain non-IID mini-CIFAR-10 data.
 
 ## Note
-In our experiment, all 10 client participated in each aggregation process.
+In our experiment, the number of clients is M=10, and all clients participated in each aggregation process.
 
 If the next experiments using the SGD, you should set
 
