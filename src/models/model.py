@@ -6,7 +6,7 @@ import numpy as np
 class Linear_Regression(nn.Module):
     def __init__(self, input_shape, out_dim):
         super(Linear_Regression, self).__init__()
-        k = 4096
+        k = 128
         self.fc1 = nn.Linear(input_shape, k)
         self.fc2 = nn.Linear(k, k)
         self.fc3 = nn.Linear(k, out_dim)
@@ -40,11 +40,13 @@ class TwoHiddenLayerFc(nn.Module): #output=10
         self.fc1 = nn.Linear(input_shape, k)
         self.fc2 = nn.Linear(k, k)
         self.fc3 = nn.Linear(k, out_dim)
-        for m in self.modules():
-            if isinstance(m, nn.Linear):
-                m.weight.data.normal_(0, np.sqrt(1.5 / k))
-                if m.bias is not None:
-                    m.bias.data.normal_(0, 0.1)
+
+        # # We do not set the standard initialization in figure 1
+        # for m in self.modules():
+        #     if isinstance(m, nn.Linear):
+        #         m.weight.data.normal_(0, np.sqrt(1.5 / k))
+        #         if m.bias is not None:
+        #             m.bias.data.normal_(0, 0.1)
 
 
     def forward(self, x):
@@ -65,15 +67,16 @@ class LeNet(nn.Module):
         self.fc2 = nn.Linear(120*k, 84*k)
         self.fc3 = nn.Linear(84*k, out_dim)
 
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.normal_(m.weight, mean=0, std=np.sqrt(1 / (m.out_channels)))
-                if m.bias is not None:
-                    nn.init.normal_(m.bias, mean=0, std=0.1)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, mean=0, std=np.sqrt(1 / m.in_features))
-                if m.bias is not None:
-                    nn.init.normal_(m.bias, mean=0, std=0.1)
+        # # We do not set the standard initialization in figure 1
+        # for m in self.modules():
+        #     if isinstance(m, nn.Conv2d):
+        #         nn.init.normal_(m.weight, mean=0, std=np.sqrt(1 / (m.out_channels)))
+        #         if m.bias is not None:
+        #             nn.init.normal_(m.bias, mean=0, std=0.1)
+        #     elif isinstance(m, nn.Linear):
+        #         nn.init.normal_(m.weight, mean=0, std=np.sqrt(1 / m.in_features))
+        #         if m.bias is not None:
+        #             nn.init.normal_(m.bias, mean=0, std=0.1)
 
     def forward(self, x):
         out = F.relu(self.conv1(x))
