@@ -16,19 +16,15 @@ def read_options():
                         help='name of trainer;',
                         type=str,
                         choices=OPTIMIZERS,
-                        default='fedavg11')
+                        default='fedavg5')
     parser.add_argument('--dataset',
                         help='name of dataset;',
                         type=str,
-                        default='cifar10_all_data_1_linear_regression_niid')
+                        default='mnist_all_data_1_random_iid')
     parser.add_argument('--model',
                         help='name of model;',
                         type=str,
-                        default='linear_regression')
-    parser.add_argument('--wd',
-                        help='weight decay parameter;',
-                        type=float,
-                        default=0)
+                        default='2nn')
     parser.add_argument('--gpu',
                         action='store_true',
                         default=True,
@@ -48,7 +44,7 @@ def read_options():
     parser.add_argument('--num_round',
                         help='number of rounds to simulate;',
                         type=int,
-                        default=200)
+                        default=5000)
     parser.add_argument('--eval_every',
                         help='evaluate every ____ rounds;',
                         type=int,
@@ -64,11 +60,11 @@ def read_options():
     parser.add_argument('--num_epoch',
                         help='number of epochs when clients train on data;',
                         type=int,
-                        default=2)
+                        default=5)
     parser.add_argument('--lr',
                         help='learning rate for inner solver;',
                         type=float,
-                        default=0.1/4096)
+                        default=0.1)
     parser.add_argument('--seed',
                         help='seed for randomness;',
                         type=int,
@@ -76,11 +72,7 @@ def read_options():
     parser.add_argument('--loss function',
                         help='CrossEntropyLoss or MSELoss;',
                         type=str,
-                        default='MSELoss')
-    parser.add_argument('--psi',
-                        help='required accuracy;',
-                        type=str,
-                        default=0.9)
+                        default='CrossEntropyLoss')
     parser.add_argument('--dis',
                         help='add more information;',
                         type=str,
