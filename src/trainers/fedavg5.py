@@ -36,7 +36,6 @@ class FedAvg5Trainer(BaseTrainer):
         self.weight_change = []
         model = choose_model(options)
         self.move_model_to_gpu(model, options)
-        self.required_accuracy = options['psi']
         self.tau = options['num_epoch']
         self.optimizer = SGD(model.parameters(), lr=options['lr'], weight_decay=0.0001)
         self.num_epoch = options['num_epoch']
