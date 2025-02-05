@@ -50,7 +50,6 @@ class FedAvg11Trainer(BaseTrainer):
         else:
             self.centralized_model = Linear_Regression(28*28,1)
         self.move_model_to_gpu(self.centralized_model, options)
-        self.required_accuracy = options['psi']
         self.tau = options['num_epoch']
         self.optimizer = SGD(model.parameters(), lr=options['lr'], weight_decay=0.0005)
         self.centralized_optimizer = SGD(self.centralized_model.parameters(), lr=options['lr'], weight_decay=0.0005)
