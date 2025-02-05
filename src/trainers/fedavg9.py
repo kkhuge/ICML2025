@@ -39,7 +39,6 @@ class FedAvg9Trainer(BaseTrainer):
         self.diff_nonlinear_linear_client_0=[]
         model = choose_model(options)
         self.move_model_to_gpu(model, options)
-        self.required_accuracy = options['psi']
         self.tau = options['num_epoch']
         self.optimizer = SGD(model.parameters(), lr=options['lr'], weight_decay=0.0005)
         self.num_epoch = options['num_epoch']
